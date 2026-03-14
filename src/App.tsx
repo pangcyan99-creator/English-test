@@ -14,11 +14,16 @@ import {
   Trophy,
   ChevronRight,
   AlertCircle,
-  Info
+  Info,
+  LogOut,
+  User
 } from 'lucide-react';
 import { QUESTIONS, Question } from './data/questions';
+import Login from './components/Login';
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -28,6 +33,17 @@ const App: React.FC = () => {
   const [answers, setAnswers] = useState<(string | null)[]>(new Array(QUESTIONS.length).fill(null));
 
   const currentQuestion = QUESTIONS[currentIndex];
+
+  const handleLogin = (email: string) => {
+    setUserEmail(email);
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUserEmail(null);
+    resetQuiz();
+  };
 
   const handleSelect = (option: string) => {
     if (isSubmitted) return;
@@ -88,6 +104,10 @@ const App: React.FC = () => {
     return "加油！多练习解析中的规则，你会进步的。";
   };
 
+  if (!isAuthenticated) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   if (isFinished) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -117,17 +137,13 @@ const App: React.FC = () => {
             重新开始
           </button>
           
-          <div className="mt-6 pt-6 border-t border-slate-100">
-            <p className="text-sm text-slate-400 mb-3">推荐复习链接</p>
-            <div className="flex flex-col gap-2">
-              <a href="#" className="text-indigo-600 hover:underline text-sm flex items-center justify-center gap-1">
-                <BookOpen className="w-4 h-4" /> 英语复合句深度解析
-              </a>
-              <a href="#" className="text-indigo-600 hover:underline text-sm flex items-center justify-center gap-1">
-                <BookOpen className="w-4 h-4" /> 非谓语动词常见陷阱
-              </a>
-            </div>
-          </div>
+          <button 
+            onClick={handleLogout}
+            className="w-full mt-4 py-3 text-slate-400 hover:text-slate-600 font-bold transition-all flex items-center justify-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            退出登录
+          </button>
         </motion.div>
       </div>
     );
@@ -155,8 +171,18 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-sm font-bold text-slate-400">
-            {currentIndex + 1} <span className="text-slate-300">/</span> {QUESTIONS.length}
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-full border border-slate-100">
+              <User className="w-4 h-4 text-slate-400" />
+              <span className="text-xs font-bold text-slate-600 truncate max-w-[100px]">{userEmail}</span>
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+              title="退出登录"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </header>
