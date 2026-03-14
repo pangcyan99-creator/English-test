@@ -22,6 +22,15 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     }, 1000);
   };
 
+  const handleSocialLogin = (provider: string) => {
+    setIsLoading(true);
+    // 模拟第三方登录延迟
+    setTimeout(() => {
+      setIsLoading(false);
+      onLogin(`${provider.toLowerCase()}@example.com`);
+    }, 800);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
       <motion.div 
@@ -112,10 +121,18 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-slate-600 text-sm">
+            <button 
+              type="button"
+              onClick={() => handleSocialLogin('Google')}
+              className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-slate-600 text-sm"
+            >
               <Chrome className="w-4 h-4" /> Google
             </button>
-            <button className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-slate-600 text-sm">
+            <button 
+              type="button"
+              onClick={() => handleSocialLogin('GitHub')}
+              className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-bold text-slate-600 text-sm"
+            >
               <Github className="w-4 h-4" /> GitHub
             </button>
           </div>
